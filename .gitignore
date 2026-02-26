@@ -34,3 +34,9 @@ dist/
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# local configuration and secrets
+utils/weather.py
+
+# large model file (use Git LFS instead)
+models/crop_disease_model.h5
