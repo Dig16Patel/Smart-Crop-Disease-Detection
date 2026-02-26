@@ -1,0 +1,36 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment directories
+env/
+venv/
+ENV/
+
+# Data and models
+dataset/
+models/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Mac artifacts
+.DS_Store
+
+# Windows artifacts
+Thumbs.db
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
