@@ -2,6 +2,24 @@ from fpdf import FPDF
 from datetime import datetime
 
 
+def sanitize_text(text: str) -> str:
+    """Replace characters unsupported by Helvetica (latin-1 only) with ASCII equivalents."""
+    replacements = {
+        "\u2014": "-",   # em dash —
+        "\u2013": "-",   # en dash –
+        "\u2018": "'",   # left single quote
+        "\u2019": "'",   # right single quote
+        "\u201c": '"',   # left double quote
+        "\u201d": '"',   # right double quote
+        "\u2026": "...", # ellipsis
+        "\u00b0": "deg", # degree sign
+    }
+    for char, replacement in replacements.items():
+        text = text.replace(char, replacement)
+    # Final fallback: encode to latin-1, replace anything still unsupported
+    return text.encode("latin-1", errors="replace").decode("latin-1")
+
+
 class CropReport(FPDF):
     def header(self):
         self.set_fill_color(22, 163, 74)
@@ -59,7 +77,7 @@ def generate_report_pdf(
 
     # ── Scan Summary ──
     pdf.section_title("Scan Summary")
-    pdf.key_value("Analysed By:", username)
+    pdf.key_value("Analysed By:", sanitize_text(username))
     pdf.key_value("Date & Time:", datetime.now().strftime("%d %B %Y, %I:%M %p"))
     pdf.ln(4)
 
@@ -71,7 +89,7 @@ def generate_report_pdf(
     pdf.set_draw_color(199, 210, 254)
     pdf.set_font("Helvetica", "B", 11)
     pdf.set_text_color(67, 56, 202)
-    pdf.cell(0, 12, f"  Detected Disease:  {disease_name}", border=1, ln=True, fill=True)
+    pdf.cell(0, 12, f"  Detected Disease:  {sanitize_text(disease_name)}", border=1, ln=True, fill=True)
     pdf.ln(3)
 
     # Confidence row
@@ -94,7 +112,7 @@ def generate_report_pdf(
         pdf.set_font("Helvetica", "", 10)
         pdf.set_text_color(51, 65, 85)
         # Use effective page width for multi_cell
-        pdf.multi_cell(pdf.epw, 6, description)
+        pdf.multi_cell(pdf.epw, 6, sanitize_text(description))
         pdf.ln(4)
 
     # ── Treatment Recommendations ──
@@ -104,7 +122,7 @@ def generate_report_pdf(
         pdf.set_text_color(51, 65, 85)
         for i, t in enumerate(treatments, 1):
             # Use a full-width multi_cell with numbered prefix in the text
-            pdf.multi_cell(pdf.epw, 7, f"{i}. {t}")
+            pdf.multi_cell(pdf.epw, 7, sanitize_text(f"{i}. {t}"))
             pdf.ln(1)
         pdf.ln(2)
 

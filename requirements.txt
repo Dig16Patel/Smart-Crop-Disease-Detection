@@ -3,3 +3,6 @@ tensorflow
 numpy
 pillow
 opencv-python
+google-generativeai
+huggingface_hub
+groq
